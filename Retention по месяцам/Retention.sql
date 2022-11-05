@@ -2,8 +2,8 @@
  create or replace view retention_month(first_month, cohort_month, cohort_users, uid, revenue) as
 WITH data AS (
     SELECT data.uid,
-           to_char(data.pay_time, 'YYYY-MM-01'::text)::date                           AS cohort_month, -- приводим к месяцу в формате строки дату оплат
-           to_char(f.first_time, 'YYYY-MM-01'::text)::date                            AS first_month, -- приводим к месяцу в формате строки дату первой оплаты
+           date_trunc('month', data.pay_time)::date                           AS cohort_month, -- приводим к месяцу в формате строки дату оплат
+           date_trunc('month', f.first_time)::date                            AS first_month, -- приводим к месяцу в формате строки дату первой оплаты
            round(((date(data.pay_time) - date(f.first_time)) / 28)::double precision) AS cohort_lifetime,  -- срок жизни пользователя в месяцах
            data.pay_sum
     FROM (SELECT f_1.uid, -- идентификатор пользователя
